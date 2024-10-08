@@ -1,0 +1,12 @@
+server:
+  port: 2345
+  servlet:
+    encoding:
+      force-response: true
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:2345/barrikeit
+    username: user
+    password: "pass"
+    driver-class-name: org.postgresql.Driver
