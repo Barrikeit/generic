@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.barrikeit.commons.EntityConstants;
 
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
@@ -17,8 +18,10 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
-@AttributeOverride(name = "id", column = @Column(name = "id_user", nullable = false))
+@Table(name = EntityConstants.USERS)
+@AttributeOverride(
+    name = EntityConstants.ID,
+    column = @Column(name = EntityConstants.ID_USER, nullable = false))
 public class User extends GenericEntity {
   @Serial private static final long serialVersionUID = 1L;
 

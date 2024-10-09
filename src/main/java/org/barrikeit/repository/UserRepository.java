@@ -5,7 +5,7 @@ import org.barrikeit.domain.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersRepository extends GenericRepository<User, Long> {
+public interface UserRepository extends GenericRepository<User, Long> {
 
   Optional<User> findByUsernameEqualsIgnoreCase(String user);
 
