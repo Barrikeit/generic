@@ -1,6 +1,6 @@
-package org.barrikeit.commons.exceptions;
+package org.barrikeit.util.exceptions;
 
-import org.barrikeit.commons.ExceptionConstants;
+import org.barrikeit.util.constants.ExceptionConstants;
 import org.springframework.http.HttpStatus;
 
 import java.net.URI;

@@ -2,7 +2,7 @@ package org.barrikeit.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * <b>Database Configuration Class</b>
@@ -24,8 +24,8 @@ import org.springframework.context.annotation.Configuration;
  * such as URL, driver, username, and password.
  */
 @Getter
-@Configuration
-public class DBConfiguration {
+@Component
+public class ApplicationProperties {
 
   @Value("${spring.datasource.url}")
   private String path;

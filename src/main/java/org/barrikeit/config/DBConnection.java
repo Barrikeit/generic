@@ -3,18 +3,17 @@ package org.barrikeit.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import lombok.extern.slf4j.Slf4j;
-import org.barrikeit.commons.ConfigurationConstants;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.barrikeit.util.constants.ConfigurationConstants;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+@Log4j2
 @Component
+@AllArgsConstructor
 public class DBConnection {
-  private final DBConfiguration config;
 
-  public DBConnection(DBConfiguration config) {
-    this.config = config;
-  }
+  private final ApplicationProperties config;
 
   public Connection getConnection() {
     try {
@@ -29,12 +28,12 @@ public class DBConnection {
   }
 
   public void closeConnection(Connection con) {
-    try{
-      if (con != null){
+    try {
+      if (con != null) {
         log.info(ConfigurationConstants.RELEASING_ALL_OPEN_RESOURCES);
         con.close();
       }
-    }catch (SQLException ex) {
+    } catch (SQLException ex) {
       log.error(ConfigurationConstants.NOT_ABLE_TO_CLOSE_CONNECTION_TO_DATABASE);
       log.error("Error closing resource: {}", ex.getMessage());
     }

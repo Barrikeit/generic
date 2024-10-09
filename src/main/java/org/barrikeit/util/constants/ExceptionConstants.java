@@ -1,4 +1,4 @@
-package org.barrikeit.commons;
+package org.barrikeit.util.constants;
 
 public class ExceptionConstants {
   private ExceptionConstants() {}

@@ -1,4 +1,4 @@
-package org.barrikeit.commons.exceptions;
+package org.barrikeit.util.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
