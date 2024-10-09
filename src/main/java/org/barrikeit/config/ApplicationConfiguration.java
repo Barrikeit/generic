@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = "org.barrikeit")
 @EnableJpaRepositories(basePackages = "org.barrikeit.repository")
 public class ApplicationConfiguration {
+  private ApplicationConfiguration() {}
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -24,6 +25,7 @@ public class ApplicationConfiguration {
     YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
     yaml.setResources(new ClassPathResource("config/application.yaml"));
     Properties properties = yaml.getObject();
+    assert properties != null;
     propertySources.addLast(new PropertiesPropertySource("yamlProperties", properties));
 
     configurer.setPropertySources(propertySources);

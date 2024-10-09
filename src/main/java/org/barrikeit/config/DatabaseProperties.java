@@ -1,7 +1,9 @@
 package org.barrikeit.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,18 +26,56 @@ import org.springframework.stereotype.Component;
  * such as URL, driver, username, and password.
  */
 @Getter
+@Setter
 @Component
-public class ApplicationProperties {
+@PropertySource(value = {"classpath:config/application.yaml"})
+public class DatabaseProperties {
 
   @Value("${spring.datasource.url}")
-  private String path;
+  private String url;
 
   @Value("${spring.datasource.driverClassName}")
-  private String driver;
+  private String driverClassName;
 
   @Value("${spring.datasource.username}")
   private String username;
 
   @Value("${spring.datasource.password}")
   private String password;
+
+  @Value("${spring.jpa.database}")
+  private String database;
+
+  @Value("${spring.jpa.database-platform}")
+  private String dialect;
+
+  @Value("${spring.jpa.generate-ddl}")
+  private String generateDdl;
+
+  @Value("${spring.jpa.open-in-view}")
+  private String openInView;
+
+  @Value("${spring.jpa.properties.hibernate.synonyms}")
+  private String synonyms;
+
+  @Value("${spring.jpa.properties.hibernate.format_sql}")
+  private String formatSql;
+
+  @Value("${spring.jpa.properties.hibernate.show_sql}")
+  private String showSql;
+
+  @Value("${spring.jpa.properties.hibernate.default_schema}")
+  private String defaultSchema;
+
+  @Value("${spring.jpa.properties.hibernate.hbm2ddl.auto}")
+  private String hbm2ddlAuto;
+
+  @Value("${spring.jpa.properties.hibernate.hbm2ddl.import_files}")
+  private String importFiles;
+
+  @Value("${spring.jpa.properties.hibernate.generate_statistics}")
+  private String generateStatistics;
+
+  @Value("${spring.jpa.properties.hibernate.enable_lazy_load_no_trans}")
+  private String enableLazyLoadNoTrans;
 }

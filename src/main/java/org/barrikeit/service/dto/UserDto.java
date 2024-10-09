@@ -15,4 +15,9 @@ public class UserDto extends GenericDto {
 
   private String username;
   private String email;
+
+  @Override
+  public String toString() {
+    return "UserDto{" + "username='" + username + '\'' + ", email='" + email + '\'' + '}';
+  }
 }

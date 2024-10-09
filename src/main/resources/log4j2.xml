@@ -15,5 +15,8 @@
         <Logger name="org.barrikeit" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
+        <logger name="org.springframework" level="ERROR"/>
+        <logger name="org.hibernate" level="ERROR"/>
+        <logger name="com.zaxxer.hikari" level="ERROR"/>
     </Loggers>
 </Configuration>

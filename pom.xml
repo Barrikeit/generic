@@ -7,6 +7,7 @@
     <groupId>org.barrikeit</groupId>
     <artifactId>generic</artifactId>
     <version>0.0.1</version>
+    <packaging>war</packaging>
 
     <properties>
         <!-- spring context and spring data jpa have duplicated dependencies -->
@@ -16,6 +17,7 @@
 
         <spring.version>6.1.13</spring.version>
         <spring-data.version>3.3.4</spring-data.version>
+        <spring-security.version>6.3.3</spring-security.version>
         <spring-boot.version>3.1.5</spring-boot.version>
         <lombok.version>1.18.34</lombok.version>
         <log4j-slf4j2.version>2.24.1</log4j-slf4j2.version>
@@ -26,6 +28,7 @@
         <yaml.version>2.3</yaml.version>
 
         <maven-compiler.version>3.8.1</maven-compiler.version>
+        <maven-war.version>3.4.0</maven-war.version>
     </properties>
 
     <dependencies>
@@ -44,6 +47,11 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
             <version>${spring-data.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
         </dependency>
 
         <!-- Lombok y Logs -->
@@ -106,6 +114,26 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!-- war plugins -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <warSourceIncludes>WEB-INF/**,META-INF/**</warSourceIncludes>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <outputDirectory>dist</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

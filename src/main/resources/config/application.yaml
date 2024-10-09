@@ -6,25 +6,42 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:2345/generic
-    username: user
-    password: "pass"
+    url: jdbc:postgresql://localhost:5432/generic
+    username: barrikeit
+    password: "barrikeit"
     driverClassName: org.postgresql.Driver
     hikari:
-      poolName: Hikari
-      auto-commit: false
-      minimumIdle: 2
-      maximumPoolSize: 10
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: Hikari
       datasource-properties:
         includeSynonyms: false
   jpa:
     database: generic
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    open-in-view: false
     properties:
       hibernate:
         synonyms: false
         format_sql: true
-    show-sql: true
+        show_sql: true
+        default_schema: generic
+        hbm2ddl:
+          auto: create-drop
+          import_files: config/import.sql
+        generate_statistics: false
+        enable_lazy_load_no_trans: true
+  session:
+    store-type: jdbc
+    jdbc:
+      initializer:
+        enabled: true
+      table-name: SPRING_SESSION
+      initialize-schema: never
 
 # docker pull postgres:14.4-alpine
 # docker run -d --name generic -e POSTGRES_PASSWORD=user -e POSTGRES_USER=pass -e POSTGRES_DB=generic -p 2345:2345 postgres:14.4-alpine

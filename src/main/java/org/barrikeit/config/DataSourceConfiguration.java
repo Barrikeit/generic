@@ -1,0 +1,41 @@
+package org.barrikeit.config;
+
+import javax.sql.DataSource;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Log4j2
+@Configuration
+@AllArgsConstructor
+public class DataSourceConfiguration {
+
+  private final DatabaseProperties dbProperties;
+
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
+
+  @Bean
+  public DataSource dataSource() {
+    log.info("Creating a datasource for {}", dbProperties.getDriverClassName());
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName(dbProperties.getDriverClassName());
+    dataSource.setUrl(dbProperties.getUrl());
+    dataSource.setUsername(dbProperties.getUsername());
+    dataSource.setPassword(dbProperties.getPassword());
+    dataSource.setSchema(dbProperties.getDefaultSchema());
+    return dataSource;
+  }
+
+  @Bean
+  public PasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
+  }
+}
