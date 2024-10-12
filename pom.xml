@@ -10,8 +10,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <!-- spring context and spring data jpa have duplicated dependencies -->
-        <!-- spring data jpa contains slf4j-api:2.0.2 wich is also on log4j-slf4j2:slf4j-api:2.0.16 -->
         <app.version>0.0.1</app.version>
         <java.version>17</java.version>
 

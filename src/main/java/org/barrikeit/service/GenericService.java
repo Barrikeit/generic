@@ -21,16 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
  * entities and their corresponding DTOs. It interacts with a {@link GenericRepository} for data
  * access and uses a {@link GenericMapper} for object mapping between entities and DTOs.
  *
- * @param <G> the entity type that extends {@link GenericEntity}.
+ * @param <E> the entity type that extends {@link GenericEntity}.
  * @param <S> the type of the entity's identifier, which must be {@link Serializable}.
  * @param <D> the DTO type that extends {@link GenericDto}.
  */
 @Log4j2
 @AllArgsConstructor
 public abstract class GenericService<
-    G extends GenericEntity, S extends Serializable, D extends GenericDto> {
-  private final GenericRepository<G, S> repository;
-  private final GenericMapper<G, D> mapper;
+    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
+  private final GenericRepository<E, S> repository;
+  private final GenericMapper<E, D> mapper;
 
   /**
    * Retrieves a list of all DTOs sorted by their identifier.
@@ -58,7 +58,7 @@ public abstract class GenericService<
    *
    * @return a list of entities.
    */
-  public List<G> findAllEntity() {
+  public List<E> findAllEntity() {
     return repository.findAll(Sort.by(Sort.Direction.ASC, EntityConstants.ID)).stream().toList();
   }
 
@@ -68,7 +68,7 @@ public abstract class GenericService<
    * @param sort the sorting criteria.
    * @return a list of entities.
    */
-  public List<G> findAllEntity(Sort sort) {
+  public List<E> findAllEntity(Sort sort) {
     return repository.findAll(sort).stream().toList();
   }
 
@@ -93,7 +93,7 @@ public abstract class GenericService<
    * @return the entity.
    * @throws NotFoundException if the entity is not found.
    */
-  public G findEntity(S id) {
+  public E findEntity(S id) {
     return repository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(ExceptionConstants.NOT_FOUND, id));
@@ -107,7 +107,7 @@ public abstract class GenericService<
    */
   @Transactional
   public D save(D dto) {
-    G entity = mapper.toEntity(dto);
+    E entity = mapper.toEntity(dto);
     return mapper.toDto(repository.save(entity));
   }
 
@@ -118,7 +118,7 @@ public abstract class GenericService<
    * @return the saved entity.
    */
   @Transactional
-  public G save(G entity) {
+  public E save(E entity) {
     return repository.save(entity);
   }
 
@@ -131,7 +131,7 @@ public abstract class GenericService<
    */
   @Transactional
   public D update(S id, D dto) {
-    G entity = findEntity(id);
+    E entity = findEntity(id);
     mapper.updateEntity(dto, entity);
     return mapper.toDto(repository.save(entity));
   }

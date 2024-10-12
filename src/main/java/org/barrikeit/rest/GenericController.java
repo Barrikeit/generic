@@ -24,16 +24,16 @@ import org.springframework.web.bind.annotation.RequestBody;
  * designed to work with entities that extend {@link GenericEntity} and their corresponding DTOs
  * that extend {@link GenericDto}.
  *
- * @param <G> the entity type that extends {@link GenericEntity}.
+ * @param <E> the entity type that extends {@link GenericEntity}.
  * @param <S> the type of the entity's identifier, which must be {@link Serializable}.
  * @param <D> the DTO type that extends {@link GenericDto}.
  */
 @Log4j2
 @AllArgsConstructor
 public abstract class GenericController<
-    G extends GenericEntity, S extends Serializable, D extends GenericDto> {
+    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
 
-  private final GenericService<G, S, D> service;
+  private final GenericService<E, S, D> service;
 
   /**
    * Retrieves a list of all DTOs.

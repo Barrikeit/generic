@@ -28,14 +28,14 @@ import org.mapstruct.MappingTarget;
  *     uses = {OtroMapper.class})</code>
  * </ul>
  *
- * @param <G> the entity class that extends the generic entity.
+ * @param <E> the entity class that extends the generic entity.
  * @param <D> the DTO class that extends the generic DTO.
  */
-public interface GenericMapper<G extends GenericEntity, D extends GenericDto> {
+public interface GenericMapper<E extends GenericEntity, D extends GenericDto> {
 
-  D toDto(G source);
+  D toDto(E source);
 
-  G toEntity(D source);
+  E toEntity(D source);
 
-  void updateEntity(D source, @MappingTarget G target);
+  void updateEntity(D source, @MappingTarget E target);
 }
