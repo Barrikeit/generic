@@ -1,42 +1,81 @@
 package org.barrikeit.config;
 
-import java.util.Properties;
 import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * <b>Hibernate Configuration Class</b>
+ *
+ * <p>This configuration class sets up the necessary beans for integrating Hibernate as a standalone
+ * ORM framework. It is responsible for configuring Hibernate-specific settings through the {@link
+ * LocalSessionFactoryBean} and {@link HibernateTransactionManager}, which facilitate the management
+ * of JPA entities using the Hibernate API.
+ *
+ * <p>Properties specific to Hibernate, such as SQL visibility, batching, and dialect, are sourced
+ * from {@link ApplicationProperties} and configured accordingly.
+ *
+ * <p>This configuration focuses on leveraging Hibernate’s native API, making it useful when
+ * advanced Hibernate-specific features (such as caching strategies or batch processing) are
+ * required that may not be fully supported by standard JPA.
+ */
 @Log4j2
 @Configuration
 @AllArgsConstructor
+@EnableTransactionManagement
+@EnableJpaRepositories(
+    value = {ApplicationConfiguration.REPOSITORY_PACKAGE_TO_SCAN},
+    entityManagerFactoryRef = "hibernateSessionFactory",
+    transactionManagerRef = "hibernateTransactionManager")
 public class HibernateConfiguration {
 
-  public static final String JPA_PACKAGE_TO_SCAN = "org.barrikeit";
+  private final ApplicationProperties.DatabaseProperties dbProperties;
 
-  private final DatabaseProperties dbProperties;
-
-  public Properties hibernateProperties() {
-    Properties properties = new Properties();
-    properties.put("hibernate.dialect", dbProperties.getDialect());
-    properties.put("hibernate.show_sql", dbProperties.getShowSql());
-    properties.put("hibernate.format_sql", dbProperties.getFormatSql());
-    properties.put("hibernate.hbm2ddl.auto", dbProperties.getHbm2ddlAuto());
-    properties.put("hibernate.hbm2ddl.import_files", dbProperties.getImportFiles());
-    properties.put("hibernate.generate_statistics", dbProperties.getGenerateStatistics());
-    properties.put("hibernate.jdbc.batch_size", "5");
-    properties.put("hibernate.default_batch_fetch_size", "10");
-
-    return properties;
-  }
-
-  @Bean
-  public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
+  /**
+   * Creates a {@link LocalSessionFactoryBean} for managing Hibernate session lifecycle.
+   *
+   * <p>This bean is responsible for creating a {@link SessionFactory}, which is used to manage
+   * Hibernate sessions. It sets the data source, configures the packages to scan for entities, and
+   * applies the properties defined in {@link
+   * ApplicationProperties.DatabaseProperties#properties()}.
+   *
+   * @param dataSource the {@link DataSource} used to connect to the database.
+   * @return a configured {@link LocalSessionFactoryBean} instance.
+   */
+  @Bean(name = "hibernateSessionFactory")
+  public LocalSessionFactoryBean hibernateSessionFactory(DataSource dataSource) {
+    log.info("***Creating Hibernate SessionFactory");
     LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
     sessionFactory.setDataSource(dataSource);
-    sessionFactory.setPackagesToScan(HibernateConfiguration.JPA_PACKAGE_TO_SCAN);
-    sessionFactory.setHibernateProperties(hibernateProperties());
+    sessionFactory.setPackagesToScan(ApplicationConfiguration.JPA_PACKAGE_TO_SCAN);
+    sessionFactory.setHibernateProperties(dbProperties.properties());
     return sessionFactory;
+  }
+
+  /**
+   * Configures the {@link HibernateTransactionManager} for managing Hibernate transactions.
+   *
+   * <p>This bean integrates transaction management into the application, allowing for atomic
+   * operations over multiple entities. The transaction manager uses the {@link SessionFactory}
+   * created by {@link #hibernateSessionFactory(DataSource dataSource)} for transaction management.
+   *
+   * @param sessionFactory the Hibernate {@link SessionFactory} for transaction management.
+   * @return a configured {@link HibernateTransactionManager} instance.
+   */
+  @Bean(name = "hibernateTransactionManager")
+  public HibernateTransactionManager hibernateTransactionManager(
+      @Qualifier("hibernateSessionFactory") SessionFactory sessionFactory) {
+    log.info("***Creating Hibernate TransactionManager");
+    HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+    transactionManager.setSessionFactory(sessionFactory);
+    return transactionManager;
   }
 }

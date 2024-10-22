@@ -1,6 +1,5 @@
 package org.barrikeit.config;
 
-import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Log4j2
 @Configuration
 @AllArgsConstructor
-public class DataSourceConfiguration {
+public class JdbcConfiguration {
 
-  private final DatabaseProperties dbProperties;
+  private final ApplicationProperties.DatabaseProperties dbProperties;
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -23,8 +22,8 @@ public class DataSourceConfiguration {
   }
 
   @Bean
-  public DataSource dataSource() {
-    log.info("Creating a datasource for {}", dbProperties.getDriverClassName());
+  public DriverManagerDataSource dataSource() {
+    log.info("***Creating a datasource for {}", dbProperties.getDriverClassName());
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setDriverClassName(dbProperties.getDriverClassName());
     dataSource.setUrl(dbProperties.getUrl());
