@@ -1,20 +1,22 @@
 package org.barrikeit.config;
 
 import java.util.Properties;
+
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Log4j2
 @Configuration
-@EnableAspectJAutoProxy
+@AllArgsConstructor
 @ComponentScan(basePackages = ApplicationConfiguration.COMPONENT_PACKAGE_TO_SCAN)
 public class ApplicationConfiguration {
 
@@ -40,10 +42,5 @@ public class ApplicationConfiguration {
     configurer.setIgnoreResourceNotFound(true);
     configurer.setIgnoreUnresolvablePlaceholders(true);
     return configurer;
-  }
-
-  @Bean
-  public PingPongAspect pingPongAspect() {
-    return new PingPongAspect();
   }
 }

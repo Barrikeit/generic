@@ -6,17 +6,21 @@
                     pattern="%style{%date{yyyy-MM-dd HH:mm:ss}}{blue} [%thread] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan} %logger{36} - %message%n"
                     disableAnsi="false"/>
         </Console>
+        <File name="File" fileName="dist/logs/generic.log">
+            <PatternLayout
+                    pattern="%style{%date{yyyy-MM-dd HH:mm:ss}}{blue} [%thread] %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan} %logger{36} - %message%n"/>
+        </File>
     </Appenders>
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
-        <!-- Muestra los logs de debug en el paquete especificado -->
-        <Logger name="org.barrikeit" level="debug" additivity="false">
+        <Logger name="org.barrikeit" level="DEBUG" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
-        <logger name="org.springframework" level="ERROR"/>
-        <logger name="org.hibernate" level="ERROR"/>
-        <logger name="com.zaxxer.hikari" level="ERROR"/>
+        <!-- Other loggers -->
+        <Logger name="org.springframework" level="ERROR"/>
+        <Logger name="org.hibernate" level="ERROR"/>
+        <Logger name="com.zaxxer.hikari" level="ERROR"/>
     </Loggers>
 </Configuration>
