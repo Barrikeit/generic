@@ -13,19 +13,18 @@ import org.springframework.web.servlet.DispatcherServlet;
 @Log4j2
 @Configuration
 @AllArgsConstructor
-public class WebAppInitializer implements WebApplicationInitializer {
+public class ServletInitializer implements WebApplicationInitializer {
 
   @Override
-  public void onStartup(ServletContext container) {
-    log.info("***Web application instantiated.");
-
+  public void onStartup(ServletContext servletContext) {
+    log.info("***Web application initialized.");
     // Creates context object and sets ContextLoaderListener to servletContext
     AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
     ctx.register(ApplicationConfiguration.class);
-    container.addListener(new ContextLoaderListener(ctx));
-
+    servletContext.addListener(new ContextLoaderListener(ctx));
     // Register and map the dispatcher servlet
-    ServletRegistration.Dynamic servlet = container.addServlet("generic", new DispatcherServlet(ctx));
+    DispatcherServlet dispatcherServlet = new DispatcherServlet(ctx);
+    ServletRegistration.Dynamic servlet = servletContext.addServlet("generic", dispatcherServlet);
     servlet.addMapping("/api/*");
     servlet.setLoadOnStartup(1);
   }
