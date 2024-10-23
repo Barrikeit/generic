@@ -27,16 +27,21 @@ import org.springframework.stereotype.Component;
  * <p>This class uses the {@code @Value} annotation approach to inject database-related properties
  * such as URL, driver, username, and password.
  */
-@Component
+@Configuration
 @PropertySource(value = {"classpath:config/application.yaml"})
 public class ApplicationProperties {
 
-  private DatabaseProperties databaseProperties;
-  private ServerProperties serverProperties;
+  @Getter
+  @Setter
+  @Component
+  public static class GenericProperties {
+    @Value("${generic.name}")
+    private String name;
+  }
 
   @Getter
   @Setter
-  @Configuration
+  @Component
   public static class ServerProperties {
     @Value("${server.port}")
     private int port;
@@ -47,7 +52,7 @@ public class ApplicationProperties {
 
   @Getter
   @Setter
-  @Configuration
+  @Component
   public static class DatabaseProperties {
     @Value("${spring.datasource.url}")
     private String url;
