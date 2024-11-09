@@ -1,8 +1,6 @@
 package org.barrikeit.config;
 
 import java.io.File;
-import java.nio.file.Path;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.Context;
@@ -15,40 +13,32 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 public class ServletContainerFactory {
 
-  private final String distDir = Path.of(System.getProperty("user.dir") + "/dist").toAbsolutePath().toString();
-  private final String webappDir = Path.of(distDir, "webapps/ROOT").toAbsolutePath().toString();
-  private final String warFilePath =Path.of(distDir + "/generic.war").toAbsolutePath().toString();
   private final ApplicationProperties.ServerProperties serverProperties;
+  private final ServletInitializer servletInitializer;
+  private final String warPath = "dist/generic.war";
+  private final String classesPath = "target/classes";
 
   @Bean
   public Tomcat tomcatFactory() {
-    ensureDirectoryExists(distDir);
-    ensureDirectoryExists(webappDir);
-
     Tomcat tomcat = new Tomcat();
     tomcat.setPort(serverProperties.getPort());
     tomcat.setSilent(true);
-    tomcat.setBaseDir(distDir);
     tomcat.setAddDefaultWebXmlToWebapp(false);
 
-    log.info("Deploying application from war: {}", warFilePath);
-    Context context = tomcat.addWebapp("", warFilePath);
+    if (serverProperties.isStandaloneWar()) {
+      File warFile = new File(warPath);
+      if (!warFile.exists()) {
+        throw new IllegalStateException("WAR file not found at " + warFile.getAbsolutePath());
+      }
+      log.info("Deploying application from WAR: {}", warFile.getAbsolutePath());
+      tomcat.addWebapp("", warFile.getAbsolutePath());
+    } else {
+      File base = new File(classesPath);
+      Context context = tomcat.addContext("/generic", base.getAbsolutePath());
 
-    customizeContext(context);
+      log.info("Deploying application from target/classes: {}", base.getAbsolutePath());
+      context.addServletContainerInitializer((c, ctx) -> servletInitializer.onStartup(ctx), null);
+    }
     return tomcat;
   }
-
-  private void ensureDirectoryExists(String path) {
-    File directory = new File(path);
-    if (!directory.exists()) {
-      log.info("Creating directory: {}", path);
-      if (directory.mkdirs()) {
-        log.info("Directory created successfully: {}", path);
-      } else {
-        log.error("Failed to create directory: {}", path);
-      }
-    }
-  }
-
-  private void customizeContext(Context context) {}
 }

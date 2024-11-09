@@ -25,11 +25,11 @@ public class ServerStatus {
     log.info("Server Status - [UP]: [{}]", currentTime);
   }
 
-  @Scheduled(fixedDelay = 60, timeUnit = TimeUnit.MINUTES)
+  @Scheduled(initialDelay = 1, fixedDelay = 60, timeUnit = TimeUnit.MINUTES)
   public void healthCheck() {
     checkDatabaseConnection();
-    checkDiskSpace();
     checkMemoryUsage();
+    checkDiskSpace();
   }
 
   private void checkDatabaseConnection() {
@@ -40,6 +40,16 @@ public class ServerStatus {
     }
   }
 
+  private void checkMemoryUsage() {
+    long totalMemory = Runtime.getRuntime().totalMemory();
+    long freeMemory = Runtime.getRuntime().freeMemory();
+    long usedMemory = totalMemory - freeMemory;
+    log.info(
+        "Memory Usage - Used: {} MB, Total: {} MB",
+        usedMemory / (1024 * 1024),
+        totalMemory / (1024 * 1024));
+  }
+
   private void checkDiskSpace() {
     File root = new File("/");
     long freeSpace = root.getFreeSpace();
@@ -48,17 +58,5 @@ public class ServerStatus {
         "Disk Space - Free: {} MB, Total: {} MB",
         freeSpace / (1024 * 1024),
         totalSpace / (1024 * 1024));
-  }
-
-  private void checkMemoryUsage() {
-    long totalMemory = Runtime.getRuntime().totalMemory();
-    long freeMemory = Runtime.getRuntime().freeMemory();
-    long usedMemory = totalMemory - freeMemory;
-    long maxMemory = Runtime.getRuntime().maxMemory();
-
-    log.info(
-        "Memory Usage - Used: {} MB, Total: {} MB",
-        usedMemory / (1024 * 1024),
-        totalMemory / (1024 * 1024));
   }
 }

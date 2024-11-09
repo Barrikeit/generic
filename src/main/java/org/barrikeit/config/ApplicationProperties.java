@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
  * <b>Database Configuration Class</b>
  *
  * <p>This class is responsible for reading the database configuration values defined in the
- * application's configuration file (like application.yml, application.yaml, or
- * application.properties). It supports two main approaches for obtaining these values:
+ * application's configuration file (like .yml, .yaml, or .properties). It supports two main
+ * approaches for obtaining these values:
  *
  * <ul>
  *   <li>Using {@code @ConfigurationProperties(prefix = "spring.datasource")}: This binds all
@@ -28,8 +27,8 @@ import org.springframework.stereotype.Component;
  * such as URL, driver, username, and password.
  */
 @Configuration
-@PropertySource(value = {"classpath:config/application.yaml"})
 public class ApplicationProperties {
+  public ApplicationProperties() {}
 
   @Getter
   @Setter
@@ -45,6 +44,12 @@ public class ApplicationProperties {
   public static class ServerProperties {
     @Value("${server.port}")
     private int port;
+
+    @Value("${server.standalone-war}")
+    private boolean standaloneWar;
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     @Value("${server.servlet.encoding.force-response}")
     private boolean forceResponse;

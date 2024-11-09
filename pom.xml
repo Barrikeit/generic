@@ -31,6 +31,7 @@
 
         <maven-compiler.version>3.8.1</maven-compiler.version>
         <maven-war.version>3.4.0</maven-war.version>
+        <maven-resources.version>3.2.0</maven-resources.version>
     </properties>
 
     <dependencies>
@@ -178,7 +179,27 @@
                     <outputDirectory>dist</outputDirectory>
                 </configuration>
             </plugin>
+            <!-- Maven Resources Plugin to filter files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources.version}</version>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <profiles>
@@ -209,15 +230,18 @@
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <targetPath>${project.build.directory}/classes</targetPath>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-            </build>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <spring.profiles.active>test</spring.profiles.active>
+            </properties>
         </profile>
     </profiles>
 </project>

@@ -23,9 +23,9 @@ spring:
         synonyms: false
         format_sql: true
         show_sql: true
-        default_schema: generic
+        default_schema: lbda_abt
         hbm2ddl:
-          auto: update
+          auto: create-only #validate | create-only | drop | update | create-drop | none
           import_files: config/import.sql
         generate_statistics: false
         enable_lazy_load_no_trans: true

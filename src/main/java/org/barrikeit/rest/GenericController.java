@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.barrikeit.domain.GenericEntity;
 import org.barrikeit.service.GenericService;
 import org.barrikeit.service.dto.GenericDto;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * <b>Generic Controller Class</b>
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Log4j2
 @AllArgsConstructor
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public abstract class GenericController<
     E extends GenericEntity, S extends Serializable, D extends GenericDto> {
 

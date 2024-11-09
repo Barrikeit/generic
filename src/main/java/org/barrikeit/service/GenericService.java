@@ -108,7 +108,8 @@ public abstract class GenericService<
   @Transactional
   public D save(D dto) {
     E entity = mapper.toEntity(dto);
-    return mapper.toDto(repository.save(entity));
+    entity = repository.save(entity);
+    return mapper.toDto(entity);
   }
 
   /**

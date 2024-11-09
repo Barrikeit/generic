@@ -1,14 +1,16 @@
 server:
   port: 2345
+  name: false
+  standalone-war: false
   servlet:
     encoding:
       force-response: true
 
 spring:
-  profiles:
-    active: @spring.profiles.active@
   config:
+    activate:
+      on-profile: @spring.profiles.active@
     import:
-      - application-base.yml
-      - application-datasource.yml
-      - application-@spring.profiles.active@.yml
+      - application-base.yaml
+      - application-datasource.yaml
+      - application-@spring.profiles.active@.yaml
