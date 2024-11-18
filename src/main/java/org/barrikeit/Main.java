@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.barrikeit.config.ApplicationConfiguration;
+import org.barrikeit.config.TomcatFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 @Log4j2
@@ -14,7 +15,7 @@ public class Main {
     context.register(ApplicationConfiguration.class);
     context.refresh();
 
-    Tomcat tomcat = context.getBean(Tomcat.class);
+    Tomcat tomcat = context.getBean(TomcatFactory.class).embeddedTomcat();
 
     try {
       System.setProperty("java.io.tmpdir", "dist/temp");

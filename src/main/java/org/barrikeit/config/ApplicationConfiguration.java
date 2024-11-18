@@ -18,10 +18,10 @@ import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Log4j2
 @Configuration
-@EnableScheduling
 @ComponentScan(basePackages = ApplicationConfiguration.COMPONENT_PACKAGE_TO_SCAN)
 public class ApplicationConfiguration {
   public ApplicationConfiguration() {}
@@ -31,7 +31,7 @@ public class ApplicationConfiguration {
   public static final String REPOSITORY_PACKAGE_TO_SCAN = "org.barrikeit.repository";
   public static final String JPA_PACKAGE_TO_SCAN = "org.barrikeit.domain";
 
-  private static final String[] CONFIG_LOCATIONS = {"./", "./config/", "./configuration/"};
+  private static final String[] CONFIG_LOCATIONS = {"/", "/config/", "/configuration/"};
   private static final String[] CONFIG_EXTENSIONS = {"properties", "yml", "yaml"};
 
   @Bean
@@ -114,7 +114,7 @@ public class ApplicationConfiguration {
       return importFile;
     }
     basePath = basePath.endsWith("/") ? basePath.substring(0, basePath.length() - 1) : basePath;
-    return (importFile.startsWith("./") || importFile.startsWith("../"))
+    return (importFile.startsWith("/") || importFile.startsWith("../"))
         ? basePath + importFile
         : basePath + "/" + importFile;
   }
