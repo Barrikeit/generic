@@ -25,7 +25,7 @@ spring:
         show_sql: true
         default_schema: lbda_abt
         hbm2ddl:
-          auto: create-only #validate | create-only | drop | update | create-drop | none
+          auto: update #validate | create-only | drop | update | create-drop | none
           import_files: config/import.sql
         generate_statistics: false
         enable_lazy_load_no_trans: true

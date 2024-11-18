@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @AllArgsConstructor
-public class ServerStatus {
+public class ServerStatusTask {
 
   private final DataSource dataSource;
 

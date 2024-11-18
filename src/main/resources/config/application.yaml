@@ -1,7 +1,9 @@
 server:
-  port: 2345
-  name: false
-  standalone-war: false
+  port: 9991
+  name: generic
+  contextPath: /generic
+  apiPath: /api/*
+  module: users
   servlet:
     encoding:
       force-response: true

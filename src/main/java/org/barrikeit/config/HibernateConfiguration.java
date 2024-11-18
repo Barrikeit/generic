@@ -3,6 +3,7 @@ package org.barrikeit.config;
 import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.barrikeit.util.constants.ConfigurationConstants;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AllArgsConstructor
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    value = {ApplicationConfiguration.REPOSITORY_PACKAGE_TO_SCAN},
+    value = {ConfigurationConstants.REPOSITORIES_PACKAGE_TO_SCAN},
     entityManagerFactoryRef = "hibernateSessionFactory",
     transactionManagerRef = "hibernateTransactionManager")
 public class HibernateConfiguration {
@@ -55,7 +56,7 @@ public class HibernateConfiguration {
     log.info("***Creating Hibernate SessionFactory");
     LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
     sessionFactory.setDataSource(dataSource);
-    sessionFactory.setPackagesToScan(ApplicationConfiguration.JPA_PACKAGE_TO_SCAN);
+    sessionFactory.setPackagesToScan(ConfigurationConstants.ENTITIES_PACKAGE_TO_SCAN);
     sessionFactory.setHibernateProperties(dbProperties.properties());
     return sessionFactory;
   }

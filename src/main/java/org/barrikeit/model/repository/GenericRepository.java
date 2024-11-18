@@ -1,7 +1,7 @@
-package org.barrikeit.repository;
+package org.barrikeit.model.repository;
 
 import java.io.Serializable;
-import org.barrikeit.domain.GenericEntity;
+import org.barrikeit.model.domain.GenericEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;

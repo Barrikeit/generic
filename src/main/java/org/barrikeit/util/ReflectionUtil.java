@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.barrikeit.domain.GenericEntity;
+import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.service.dto.GenericDto;
 import org.barrikeit.util.constants.ExceptionConstants;
 import org.barrikeit.util.exceptions.FieldValueException;

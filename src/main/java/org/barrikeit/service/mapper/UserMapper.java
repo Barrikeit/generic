@@ -1,6 +1,6 @@
 package org.barrikeit.service.mapper;
 
-import org.barrikeit.domain.User;
+import org.barrikeit.model.domain.User;
 import org.barrikeit.service.dto.UserDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

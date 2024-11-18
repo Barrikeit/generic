@@ -41,23 +41,6 @@ public class ApplicationProperties {
   @Getter
   @Setter
   @Component
-  public static class ServerProperties {
-    @Value("${server.port}")
-    private int port;
-
-    @Value("${server.standalone-war}")
-    private boolean standaloneWar;
-
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
-
-    @Value("${server.servlet.encoding.force-response}")
-    private boolean forceResponse;
-  }
-
-  @Getter
-  @Setter
-  @Component
   public static class DatabaseProperties {
     @Value("${spring.datasource.url}")
     private String url;

@@ -1,10 +1,10 @@
-package org.barrikeit.rest;
+package org.barrikeit.controller;
 
 import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.domain.GenericEntity;
+import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.service.GenericService;
 import org.barrikeit.service.dto.GenericDto;
 import org.springframework.http.MediaType;

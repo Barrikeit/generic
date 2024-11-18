@@ -1,4 +1,4 @@
-package org.barrikeit.domain;
+package org.barrikeit.model.domain;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;

@@ -1,7 +1,7 @@
-package org.barrikeit.repository;
+package org.barrikeit.model.repository;
 
 import java.util.Optional;
-import org.barrikeit.domain.User;
+import org.barrikeit.model.domain.User;
 import org.springframework.stereotype.Repository;
 
 @Repository

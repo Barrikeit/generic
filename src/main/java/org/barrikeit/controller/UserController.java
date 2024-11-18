@@ -1,7 +1,7 @@
-package org.barrikeit.rest;
+package org.barrikeit.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.domain.User;
+import org.barrikeit.model.domain.User;
 import org.barrikeit.service.UserService;
 import org.barrikeit.service.dto.UserDto;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,6 @@
 package org.barrikeit.service.mapper;
 
-import org.barrikeit.domain.GenericEntity;
+import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.service.dto.GenericDto;
 import org.mapstruct.MappingTarget;
 

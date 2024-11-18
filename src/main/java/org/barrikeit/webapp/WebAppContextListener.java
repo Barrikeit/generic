@@ -1,4 +1,4 @@
-package org.barrikeit.config.webapp;
+package org.barrikeit.webapp;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -12,7 +12,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 @Log4j2
 @Configuration
 @AllArgsConstructor
-public class SpringContextLoaderListener implements ServletContextListener {
+public class WebAppContextListener implements ServletContextListener {
 
   private final AnnotationConfigWebApplicationContext context;
 

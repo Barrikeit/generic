@@ -1,4 +1,4 @@
-package org.barrikeit.config.webapp;
+package org.barrikeit.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;

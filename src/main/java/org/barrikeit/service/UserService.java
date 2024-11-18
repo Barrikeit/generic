@@ -1,8 +1,8 @@
 package org.barrikeit.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.domain.User;
-import org.barrikeit.repository.UserRepository;
+import org.barrikeit.model.domain.User;
+import org.barrikeit.model.repository.UserRepository;
 import org.barrikeit.service.dto.UserDto;
 import org.barrikeit.service.mapper.UserMapper;
 import org.springframework.stereotype.Service;
