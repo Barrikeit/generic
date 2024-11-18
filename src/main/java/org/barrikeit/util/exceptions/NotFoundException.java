@@ -1,9 +1,8 @@
 package org.barrikeit.util.exceptions;
 
+import java.net.URI;
 import org.barrikeit.util.constants.ExceptionConstants;
 import org.springframework.http.HttpStatus;
-
-import java.net.URI;
 
 public class NotFoundException extends GenericException {
 

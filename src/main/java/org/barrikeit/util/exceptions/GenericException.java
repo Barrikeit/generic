@@ -33,7 +33,7 @@ public class GenericException extends ErrorResponseException {
     if (ObjectUtils.isEmpty(exceptionMessage.getDetail())
         && ObjectUtils.isEmpty(exceptionMessage.getMessage())) {
       this.setTitle(ExceptionConstants.INTERNAL_SERVER_ERROR);
-      this.setDetail(ExceptionConstants.INTERNAL_SERVER_ERROR_DETAIL);
+      this.setDetail(ExceptionConstants.INTERNAL_SERVER_ERROR_MSG);
     }
     if (exceptionMessage.getType() != null) this.setType(URI.create(exceptionMessage.getType()));
     if (exceptionMessage.getInstance() != null)
