@@ -41,6 +41,32 @@ public class ApplicationProperties {
   @Getter
   @Setter
   @Component
+  public static class ServerProperties {
+    @Value("${server.port}")
+    private int port;
+
+    @Value("${server.name}")
+    private String name;
+
+    @Value("${server.contextPath}")
+    private String contextPath;
+
+    @Value("${server.apiPath}")
+    private String apiPath;
+
+    @Value("${server.module}")
+    private String module;
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
+    @Value("${server.servlet.encoding.force-response}")
+    private boolean forceResponse;
+  }
+
+  @Getter
+  @Setter
+  @Component
   public static class DatabaseProperties {
     @Value("${spring.datasource.url}")
     private String url;
