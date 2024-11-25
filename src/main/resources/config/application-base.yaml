@@ -16,17 +16,17 @@ spring:
   jpa:
     database: generic
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: false
+    generate-ddl: true
     open-in-view: false
     properties:
       hibernate:
         synonyms: false
         format_sql: true
         show_sql: true
-        default_schema: lbda_abt
+        default_schema: generic
         hbm2ddl:
           auto: update #validate | create-only | drop | update | create-drop | none
-          import_files: config/import.sql
+          import_files: db/insert.sql
         generate_statistics: false
         enable_lazy_load_no_trans: true
   session:

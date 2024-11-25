@@ -1,4 +1,4 @@
-package org.barrikeit.config;
+package org.barrikeit.application;
 
 import java.util.Properties;
 import lombok.Getter;
@@ -123,7 +123,6 @@ public class ApplicationProperties {
       properties.put("hibernate.format_sql", getFormatSql());
       properties.put("hibernate.hbm2ddl.auto", getHbm2ddlAuto());
       properties.put("hibernate.hbm2ddl.import_files", getImportFiles());
-      properties.put("hibernate.generate_statistics", getGenerateStatistics());
       properties.put("hibernate.generate_statistics", getGenerateStatistics());
       properties.put("hibernate.jdbc.batch_size", "5");
       properties.put("hibernate.default_batch_fetch_size", "10");

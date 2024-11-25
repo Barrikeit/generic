@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.barrikeit.application.ApplicationProperties;
 import org.barrikeit.util.constants.ConfigurationConstants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +37,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AllArgsConstructor
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    value = {ConfigurationConstants.REPOSITORIES_PACKAGE_TO_SCAN},
+    value = {ConfigurationConstants.REPOSITORIES_PACKAGE},
     entityManagerFactoryRef = "jpaEntityManagerFactory",
     transactionManagerRef = "jpaTransactionManager")
 public class JpaConfiguration {
@@ -61,7 +62,7 @@ public class JpaConfiguration {
         new LocalContainerEntityManagerFactoryBean();
     entityManagerFactoryBean.setDataSource(dataSource);
     entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-    entityManagerFactoryBean.setPackagesToScan(ConfigurationConstants.ENTITIES_PACKAGE_TO_SCAN);
+    entityManagerFactoryBean.setPackagesToScan(ConfigurationConstants.ENTITIES_PACKAGE);
     entityManagerFactoryBean.setJpaProperties(dbProperties.properties());
     return entityManagerFactoryBean;
   }

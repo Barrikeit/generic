@@ -1,4 +1,4 @@
-package org.barrikeit.config;
+package org.barrikeit.application;
 
 import static org.barrikeit.util.FileUtil.loadConfigFiles;
 
@@ -12,7 +12,7 @@ import org.springframework.core.env.MutablePropertySources;
 
 @Log4j2
 @Configuration
-@ComponentScan(basePackages = ConfigurationConstants.COMPONENT_PACKAGE_TO_SCAN)
+@ComponentScan(basePackages = ConfigurationConstants.APPLICATION_PACKAGE)
 public class ApplicationConfiguration {
   public ApplicationConfiguration() {}
 

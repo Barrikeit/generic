@@ -1,7 +1,10 @@
-package org.barrikeit.webapp;
+package org.barrikeit.config;
 
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
+import org.barrikeit.util.constants.ConfigurationConstants;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -12,8 +15,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+@Log4j2
 @EnableWebMvc
 @Configuration
+@ComponentScan(
+    basePackages = {
+      ConfigurationConstants.CONFIG_PACKAGE,
+      ConfigurationConstants.REST_PACKAGE,
+      ConfigurationConstants.SERVICES_PACKAGE,
+      ConfigurationConstants.REPOSITORIES_PACKAGE,
+      ConfigurationConstants.ENTITIES_PACKAGE
+    })
 public class WebMvcConfig implements WebMvcConfigurer {
 
   @Override
