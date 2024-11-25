@@ -158,7 +158,7 @@
             <version>${apache-poi.version}</version>
         </dependency>
 
-        <!-- Dependencia jackcess para leer, escribir y modificar archivos Access -->
+        <!-- Dependencia jackcess para leer, escribir y modificar archivos Access (.accdb)-->
         <dependency>
             <groupId>com.healthmarketscience.jackcess</groupId>
             <artifactId>jackcess</artifactId>
