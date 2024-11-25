@@ -55,8 +55,7 @@ public class ContainerFactory {
     // Set up the DispatcherServlet
     DispatcherServlet dispatcherServlet = new DispatcherServlet(applicationContext);
     Tomcat.addServlet(rootContext, serverProperties.getName(), dispatcherServlet);
-    rootContext.addServletMappingDecoded("/", serverProperties.getName());
-    rootContext.addServletMappingDecoded("/api", serverProperties.getName());
+    rootContext.addServletMappingDecoded(serverProperties.getApiPath(), serverProperties.getName());
     return tomcat;
   }
 
