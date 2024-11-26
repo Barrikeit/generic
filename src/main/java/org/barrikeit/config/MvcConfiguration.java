@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
       ConfigurationConstants.REPOSITORIES_PACKAGE,
       ConfigurationConstants.ENTITIES_PACKAGE
     })
-public class WebMvcConfig implements WebMvcConfigurer {
+public class MvcConfiguration implements WebMvcConfigurer {
 
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -46,5 +47,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Bean
   public HandlerAdapter handlerAdapter() {
     return new RequestMappingHandlerAdapter();
+  }
+
+  @Override
+  public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+    configurer.enable("generic");
   }
 }

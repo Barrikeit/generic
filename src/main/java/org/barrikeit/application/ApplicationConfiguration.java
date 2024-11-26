@@ -1,6 +1,6 @@
 package org.barrikeit.application;
 
-import static org.barrikeit.util.FileUtil.loadConfigFiles;
+import static org.barrikeit.util.FileUtil.scanAndLoadConfigFiles;
 
 import lombok.extern.log4j.Log4j2;
 import org.barrikeit.util.constants.ConfigurationConstants;
@@ -21,7 +21,7 @@ public class ApplicationConfiguration {
     PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
     MutablePropertySources propertySources = new MutablePropertySources();
 
-    if (loadConfigFiles(propertySources)) {
+    if (scanAndLoadConfigFiles(propertySources)) {
       configurer.setPropertySources(propertySources);
     }
 

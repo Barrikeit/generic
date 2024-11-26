@@ -4,6 +4,7 @@ server:
   contextPath: /generic
   apiPath: /api/*
   module: users
+  timeZone: Europe/Madrid
   servlet:
     encoding:
       force-response: true

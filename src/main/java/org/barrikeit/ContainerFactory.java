@@ -7,10 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.barrikeit.config.WebMvcConfig;
-import org.barrikeit.controller.UserController;
 import org.barrikeit.application.ApplicationProperties;
-import org.barrikeit.service.dto.UserDto;
+import org.barrikeit.config.MvcConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -48,7 +46,7 @@ public class ContainerFactory {
     // Create the Web Application Context
     applicationContext = new AnnotationConfigWebApplicationContext();
     applicationContext.setParent(mainContext);
-    applicationContext.register(WebMvcConfig.class);
+    applicationContext.register(MvcConfiguration.class);
     applicationContext.setServletContext(rootContext.getServletContext());
     applicationContext.refresh();
 
@@ -62,13 +60,13 @@ public class ContainerFactory {
   private static void startTomcat(Tomcat tomcat) {
     try {
       tomcat.start();
-      tomcat.getServer().await();
 
       String url = tomcat.getHost().getName() + ":" + tomcat.getConnector().getLocalPort();
-      log.info("Application started on {}", url);
-      UserController userController = applicationContext.getBean(UserController.class);
-      userController.save(UserDto.builder().username("username").email("mail@generic.es").build());
+      log.debug("Application started on {}", url);
+      // UserController userController = applicationContext.getBean(UserController.class);
+      // userController.save(UserDto.builder().username("username").email("mail@generic.es").build());
 
+      tomcat.getServer().await();
     } catch (LifecycleException e) {
       log.error("Failed to start Application", e);
     }

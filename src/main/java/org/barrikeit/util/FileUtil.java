@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import lombok.extern.log4j.Log4j2;
 import org.barrikeit.util.constants.ConfigurationConstants;
 import org.barrikeit.util.constants.ExceptionConstants;
@@ -22,12 +19,13 @@ import org.springframework.http.HttpStatus;
 
 @Log4j2
 public class FileUtil {
-  private FileUtil() {}
+  private FileUtil() {
+    throw new IllegalStateException("FileUtil class");
+  }
 
   public static File createTempFolder(String tempName, int port) {
     try {
-      File tempDir =
-              Files.createTempDirectory(tempName + "." + port + ".").toFile();
+      File tempDir = Files.createTempDirectory(tempName + "." + port + ".").toFile();
       tempDir.deleteOnExit();
       return tempDir;
     } catch (IOException e) {
@@ -36,33 +34,27 @@ public class FileUtil {
     }
   }
 
-  public static boolean loadConfigFiles(MutablePropertySources propertySources) {
+  public static boolean scanAndLoadConfigFiles(MutablePropertySources propertySources) {
     for (String path : ConfigurationConstants.CONFIG_LOCATIONS) {
       for (String extension : ConfigurationConstants.CONFIG_EXTENSIONS) {
-        if (loadFileIntoPropertySources(
-            propertySources, resolvePath(path, "application." + extension))) {
-          List<String> configImports = getPropertyList(propertySources, "spring.config.import");
-          configImports.forEach(
-              importFile ->
-                  loadFileIntoPropertySources(propertySources, resolvePath(path, importFile)));
-          return true; // Return on first successful load
+        if (loadFile(propertySources, resolvePath(path, "application." + extension))) {
+          List<String> imports = getPropertyList(propertySources, "spring.config.import");
+          imports.forEach(importFile -> loadFile(propertySources, resolvePath(path, importFile)));
+          return true;
         }
       }
     }
     return false;
   }
 
-  private static boolean loadFileIntoPropertySources(
-      MutablePropertySources propertySources, String filePath) {
+  private static boolean loadFile(MutablePropertySources propertySources, String filePath) {
     Resource resource = new ClassPathResource(filePath);
     if (!resource.exists()) {
-      // log.warn(
-      // "class path resource [{}] cannot be resolved to URL because it does not exist",
-      // filePath);
+      // log.warn("Class path resource [{}] does not exist", filePath);
       return false;
     }
 
-    log.info("Reading config file: {}", filePath);
+    log.info("Loading config file: {}", filePath);
     if (filePath.endsWith(".properties")) {
       return loadPropertiesFile(propertySources, resource, filePath);
     } else if (filePath.endsWith(".yaml") || filePath.endsWith(".yml")) {
@@ -116,7 +108,7 @@ public class FileUtil {
             Arrays.stream(enumerableSource.getPropertyNames())
                 .filter(propertyName -> propertyName.startsWith(keyPrefix))
                 .map(enumerableSource::getProperty)
-                .filter(value -> value instanceof String)
+                .filter(String.class::isInstance)
                 .map(String.class::cast)
                 .forEach(values::add);
           }

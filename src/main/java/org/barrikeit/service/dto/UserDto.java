@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class UserDto extends GenericDto {
 
+  private Long id;
   private String username;
   private String email;
 

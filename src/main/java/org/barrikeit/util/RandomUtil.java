@@ -3,7 +3,7 @@ package org.barrikeit.util;
 import java.util.Base64;
 import java.util.Random;
 
-public final class RandomUtil {
+public class RandomUtil {
   private RandomUtil() {
     throw new IllegalStateException("RandomUtil class");
   }
