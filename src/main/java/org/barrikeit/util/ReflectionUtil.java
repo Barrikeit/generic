@@ -1,8 +1,10 @@
 package org.barrikeit.util;
 
+import static org.barrikeit.util.TimeUtil.convertLocalDate;
+import static org.barrikeit.util.TimeUtil.convertLocalDateTime;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +18,6 @@ import org.barrikeit.util.exceptions.FieldValueException;
 import org.barrikeit.util.exceptions.NotFoundException;
 import org.barrikeit.util.exceptions.UnExpectedException;
 import org.springframework.util.ReflectionUtils;
-
-import static org.barrikeit.util.TimeUtil.convertLocalDate;
-import static org.barrikeit.util.TimeUtil.convertLocalDateTime;
 
 public class ReflectionUtil extends ReflectionUtils {
   private ReflectionUtil() {
@@ -102,10 +101,10 @@ public class ReflectionUtil extends ReflectionUtils {
   /**
    * Obtiene todos los campos declarados de una clase, incluyendo los campos de sus superclases.
    *
-   * @param clazz Clase de la cual se desean obtener los campos.
+   * @param clazz Clase de la cual se extraen los campos.
    * @return Una lista con todos los campos declarados de la clase y sus superclases.
    */
-  public static List<Field> getAllFields(Class<?> clazz) {
+  public static List<Field> getFields(Class<?> clazz) {
     List<Field> fields = new ArrayList<>();
     while (clazz != null) {
       fields.addAll(List.of(clazz.getDeclaredFields()));
@@ -115,20 +114,72 @@ public class ReflectionUtil extends ReflectionUtils {
   }
 
   /**
+   * Obtiene los campos anotados con una anotación específica desde una instancia de clase,
+   * incluyendo campos anidados.
+   *
+   * @param clazz Clase de la cual se extraen los campos anidados.
+   * @param fieldName Nombre del campo padre, usado en recursividad para construir nombres completos
+   *     en formato "padre.hijo".
+   * @return Un `Map` que asocia el nombre completo de cada campo anotado con su valor. Los nombres
+   *     reflejan la estructura anidada como "campo1.campo2".
+   */
+  public static Map<String, Field> getNestedFields(Class<?> clazz, String fieldName) {
+    Map<String, Field> fields = new HashMap<>();
+    for (Field field : getFields(clazz)) {
+      String fullFieldName = buildFullFieldName(fieldName, field.getName());
+      if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
+          || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
+        fields.putAll(getNestedFields(field.getDeclaringClass(), fullFieldName));
+      } else {
+        fields.put(fullFieldName, field);
+      }
+    }
+    return fields;
+  }
+
+  /**
    * Obtiene todos los campos de una clase, incluyendo los campos de sus superclases, que estén
    * anotados con una anotación específica.
    *
-   * @param clazz Clase de la cual se desean obtener los campos anotados.
+   * @param clazz Clase de la cual se extraen los campos anotados.
    * @param annotation La clase de la anotación que se busca en los campos.
    * @return Una lista con todos los campos anotados de la clase y sus superclases.
    * @throws NotFoundException Si no se encuentra ningún campo con la anotación especificada.
    */
-  public static List<Field> getAllAnnotatedFields(
+  public static List<Field> getAnnotatedFields(
       Class<?> clazz, Class<? extends Annotation> annotation) {
-    List<Field> annotatedFields = new ArrayList<>();
-    for (Field field : ReflectionUtil.getAllFields(clazz)) {
+    List<Field> annotatedFields =
+        getFields(clazz).stream().filter(field -> field.isAnnotationPresent(annotation)).toList();
+    if (annotatedFields.isEmpty())
+      throw new NotFoundException(ExceptionConstants.ERROR_MISSING_ANNOTATION, annotation, clazz);
+    return annotatedFields;
+  }
+
+  /**
+   * Obtiene todos los campos de una clase, incluyendo los campos de sus superclases, que estén
+   * anotados con una anotación específica.
+   *
+   * @param clazz Clase de la cual se extraen los campos anidados que esten anotados.
+   * @param annotation La clase de la anotación que se busca en los campos.
+   * @param fieldName Nombre del campo padre, usado en recursividad para construir nombres completos
+   *     en formato "padre.hijo".
+   * @return Un `Map` que asocia el nombre completo de cada campo anotado con su valor. Los nombres
+   *     reflejan la estructura anidada como "campo1.campo2".
+   * @throws NotFoundException Si no se encuentra ningún campo con la anotación especificada.
+   */
+  public static Map<String, Field> getAnnotatedNestedFields(
+      Class<?> clazz, Class<? extends Annotation> annotation, String fieldName) {
+    Map<String, Field> annotatedFields = new HashMap<>();
+    for (Field field : getFields(clazz)) {
       if (field.isAnnotationPresent(annotation)) {
-        annotatedFields.add(field);
+        String fullFieldName = buildFullFieldName(fieldName, field.getName());
+        if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
+            || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
+          annotatedFields.putAll(
+              getAnnotatedNestedFields(field.getDeclaringClass(), annotation, fullFieldName));
+        } else {
+          annotatedFields.put(fullFieldName, field);
+        }
       }
     }
     if (annotatedFields.isEmpty())
@@ -136,81 +187,14 @@ public class ReflectionUtil extends ReflectionUtils {
     return annotatedFields;
   }
 
-  public static Map<String, Field> getAllNestedFields(Class<?> clazz, String fieldName) {
-    Map<String, Field> fields = new HashMap<>();
-    for (Field field : clazz.getDeclaredFields()) {
-      String fullFieldName = buildFullFieldName(fieldName, field.getName());
-      if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
-          || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
-        fields.putAll(getAllNestedFields(field.getDeclaringClass(), fullFieldName));
-      } else {
-        fields.put(fullFieldName, field);
-      }
+  public static Map<String, Object> getAnnotatedNestedFieldsValues(
+      Object instance, Class<? extends Annotation> annotation) {
+    Map<String, Field> fields = getAnnotatedNestedFields(instance.getClass(), annotation, null);
+    Map<String, Object> values = new HashMap<>();
+    for (Map.Entry<String, Field> entry : fields.entrySet()) {
+      values.put(entry.getKey(), getFieldValue(instance, entry.getValue().getName()));
     }
-    Class<?> superClass = clazz.getSuperclass();
-    if (superClass != null) {
-      fields.putAll(getAllNestedFields(superClass, fieldName));
-    }
-    return fields;
-  }
-
-  public static List<String> getFieldNamesWithAnnotation(
-      Object instance, Class<? extends Annotation> annotation, String entityName) {
-    List<String> annotatedFieldsMap = new ArrayList<>();
-
-    for (Field field : instance.getClass().getDeclaredFields()) {
-      String fieldName = buildFullFieldName(entityName, field.getName());
-      if (field.isAnnotationPresent(annotation)) {
-        annotatedFieldsMap.add(fieldName);
-      } else if (field.getType().isAssignableFrom(GenericDto.class)
-          || field.getType().isAssignableFrom(GenericEntity.class)) {
-        annotatedFieldsMap.addAll(
-            getFieldNamesWithAnnotation(field.getClass(), annotation, fieldName));
-      }
-    }
-    return annotatedFieldsMap;
-  }
-
-  public static List<String> getFieldNamesWithOutAnnotation(
-      Object instance, Class<? extends Annotation> annotation, String entityName) {
-    List<String> annotatedFieldsMap = new ArrayList<>();
-
-    for (Field field : instance.getClass().getDeclaredFields()) {
-      String fieldName = buildFullFieldName(entityName, field.getName());
-      if (!Modifier.isStatic(field.getModifiers()) && !field.isAnnotationPresent(annotation)) {
-        annotatedFieldsMap.add(fieldName);
-      }
-    }
-
-    return annotatedFieldsMap;
-  }
-
-  /**
-   * Obtiene los campos anotados con una anotación específica desde una instancia de clase,
-   * incluyendo campos anidados.
-   *
-   * @param instance El objeto del cual se extraen los campos y valores anotados.
-   * @param annotation La clase de la anotación a buscar.
-   * @param fieldName Nombre del campo padre, usado en recursividad para construir nombres completos
-   *     en formato "padre.hijo".
-   * @return Un `Map` que asocia el nombre completo de cada campo anotado con su valor. Los nombres
-   *     reflejan la estructura anidada como "campo1.campo2".
-   */
-  public static Map<String, Object> getFieldValuesWithAnnotation(
-      Object instance, Class<? extends Annotation> annotation, String fieldName) {
-    Map<String, Object> annotatedFieldsMap = new HashMap<>();
-
-    for (Field field : instance.getClass().getDeclaredFields()) {
-      Object value = getFieldValue(instance, field.getName());
-      String fullFieldName =
-          (fieldName == null ? field.getName() : fieldName + "." + field.getName());
-      if (field.isAnnotationPresent(annotation)) {
-        annotatedFieldsMap.put(fullFieldName, value);
-      } else if (value instanceof GenericDto || value instanceof GenericEntity) {
-        annotatedFieldsMap.putAll(getFieldValuesWithAnnotation(value, annotation, fullFieldName));
-      }
-    }
-    return annotatedFieldsMap;
+    return values;
   }
 
   private static String buildFullFieldName(String parent, String child) {
@@ -224,24 +208,24 @@ public class ReflectionUtil extends ReflectionUtils {
         return null;
       } else if (targetType.isInstance(value)) {
         return (M) value;
-      } else if (targetType == String.class) {
+      } else if (targetType.equals(String.class)) {
         return (M) value.toString();
-      } else if (targetType == Integer.class || targetType == int.class) {
+      } else if (targetType.equals(Integer.class) || targetType.equals(int.class)) {
         return (M) Integer.valueOf(value.toString());
-      } else if (targetType == Long.class || targetType == long.class) {
+      } else if (targetType.equals(Long.class) || targetType.equals(long.class)) {
         return (M) Long.valueOf(value.toString());
-      } else if (targetType == Float.class || targetType == float.class) {
+      } else if (targetType.equals(Float.class) || targetType.equals(float.class)) {
         return (M) Float.valueOf(value.toString());
-      } else if (targetType == Double.class || targetType == double.class) {
+      } else if (targetType.equals(Double.class) || targetType.equals(double.class)) {
         return (M) Double.valueOf(value.toString());
-      } else if (targetType == BigDecimal.class) {
-        return (M) new BigDecimal(value.toString());
-      } else if (targetType == LocalDate.class) {
-        if (value instanceof String) return (M) convertLocalDate((String) value);
-        if (value instanceof LocalDateTime) return (M) ((LocalDateTime) value).toLocalDate();
-      } else if (targetType == LocalDateTime.class) {
-        if (value instanceof String) return (M) convertLocalDateTime((String) value);
-        if (value instanceof LocalDate) return (M) ((LocalDate) value).atStartOfDay();
+      } else if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
+        if (value instanceof String string) return (M) Boolean.valueOf(string);
+      } else if (targetType.equals(LocalDate.class)) {
+        if (value instanceof String string) return (M) convertLocalDate(string);
+        if (value instanceof LocalDateTime date) return (M) date.toLocalDate();
+      } else if (targetType.equals(LocalDateTime.class)) {
+        if (value instanceof String string) return (M) convertLocalDateTime(string);
+        if (value instanceof LocalDate date) return (M) date.atStartOfDay();
       }
     } catch (Exception e) {
       throw new UnExpectedException(
