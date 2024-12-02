@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.service.dto.GenericDto;
 import org.barrikeit.util.constants.ExceptionConstants;
@@ -169,27 +171,38 @@ public class ReflectionUtil extends ReflectionUtils {
    */
   public static Map<String, Field> getAnnotatedNestedFields(
       Class<?> clazz, Class<? extends Annotation> annotation, String fieldName) {
-    Map<String, Field> annotatedFields = new HashMap<>();
-    for (Field field : getFields(clazz)) {
-      if (field.isAnnotationPresent(annotation)) {
-        String fullFieldName = buildFullFieldName(fieldName, field.getName());
-        if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
-            || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
-          annotatedFields.putAll(
-              getAnnotatedNestedFields(field.getDeclaringClass(), annotation, fullFieldName));
-        } else {
-          annotatedFields.put(fullFieldName, field);
-        }
-      }
-    }
+    Map<String, Field> annotatedFields =
+        getFields(clazz).stream()
+            .filter(field -> field.isAnnotationPresent(annotation))
+            .flatMap(
+                field -> {
+                  String fullFieldName = buildFullFieldName(fieldName, field.getName());
+                  if (GenericEntity.class.isAssignableFrom(field.getDeclaringClass())
+                      || GenericDto.class.isAssignableFrom(field.getDeclaringClass())) {
+                    return getAnnotatedNestedFields(
+                        field.getDeclaringClass(), annotation, fullFieldName)
+                        .entrySet()
+                        .stream();
+                  } else {
+                    return Stream.of(Map.entry(fullFieldName, field));
+                  }
+                })
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     if (annotatedFields.isEmpty())
       throw new NotFoundException(ExceptionConstants.ERROR_MISSING_ANNOTATION, annotation, clazz);
     return annotatedFields;
   }
 
-  public static Map<String, Object> getAnnotatedNestedFieldsValues(
-      Object instance, Class<? extends Annotation> annotation) {
-    Map<String, Field> fields = getAnnotatedNestedFields(instance.getClass(), annotation, null);
+  public static List<Object> getListFieldValues(Object instance, List<Field> fields) {
+    List<Object> values = new ArrayList<>();
+    for (Field field : fields) {
+      values.add(getFieldValue(instance, field.getName()));
+    }
+    return values;
+  }
+
+  public static Map<String, Object> getMapFieldValues(Object instance, Map<String, Field> fields) {
     Map<String, Object> values = new HashMap<>();
     for (Map.Entry<String, Field> entry : fields.entrySet()) {
       values.put(entry.getKey(), getFieldValue(instance, entry.getValue().getName()));
