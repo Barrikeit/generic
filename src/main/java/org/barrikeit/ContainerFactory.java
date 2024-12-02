@@ -16,8 +16,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 @Log4j2
 public class ContainerFactory {
 
-  private static AnnotationConfigWebApplicationContext applicationContext;
-
   private ContainerFactory() {}
 
   public static void start(AnnotationConfigApplicationContext mainContext) {
@@ -27,6 +25,8 @@ public class ContainerFactory {
 
   private static Tomcat embeddedTomcat(AnnotationConfigApplicationContext mainContext) {
     // Get the serverProperties from the main context loaded from the application files
+    ApplicationProperties.GenericProperties applicationProperties =
+        mainContext.getBean(ApplicationProperties.GenericProperties.class);
     ApplicationProperties.ServerProperties serverProperties =
         mainContext.getBean(ApplicationProperties.ServerProperties.class);
     // Configure the tomcat
@@ -44,7 +44,8 @@ public class ContainerFactory {
         tomcat.addContext(serverProperties.getContextPath(), baseDir.getAbsolutePath());
 
     // Create the Web Application Context
-    applicationContext = new AnnotationConfigWebApplicationContext();
+    AnnotationConfigWebApplicationContext applicationContext =
+        new AnnotationConfigWebApplicationContext();
     applicationContext.setParent(mainContext);
     applicationContext.register(MvcConfiguration.class);
     applicationContext.setServletContext(rootContext.getServletContext());
@@ -52,8 +53,8 @@ public class ContainerFactory {
 
     // Set up the DispatcherServlet
     DispatcherServlet dispatcherServlet = new DispatcherServlet(applicationContext);
-    Tomcat.addServlet(rootContext, serverProperties.getName(), dispatcherServlet);
-    rootContext.addServletMappingDecoded(serverProperties.getApiPath(), serverProperties.getName());
+    Tomcat.addServlet(rootContext, applicationProperties.getName(), dispatcherServlet);
+    rootContext.addServletMappingDecoded(serverProperties.getApiPath(), applicationProperties.getName());
     return tomcat;
   }
 
@@ -63,8 +64,8 @@ public class ContainerFactory {
 
       String url = tomcat.getHost().getName() + ":" + tomcat.getConnector().getLocalPort();
       log.debug("Application started on {}", url);
-      // UserController userController = applicationContext.getBean(UserController.class);
-      // userController.save(UserDto.builder().username("username").email("mail@generic.es").build());
+      // UserController controller = applicationContext.getBean(UserController.class);
+      // controller.save(UserDto.builder().username("username").email("mail@generic.es").build());
 
       tomcat.getServer().await();
     } catch (LifecycleException e) {

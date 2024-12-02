@@ -1,2 +1,2 @@
-generic:
-  name: generic-dev-server
+application:
+  name: generic-dev

@@ -34,8 +34,14 @@ public class ApplicationProperties {
   @Setter
   @Component
   public static class GenericProperties {
-    @Value("${generic.name}")
+    @Value("${application.name}")
     private String name;
+
+    @Value("${application.version}")
+    private String version;
+
+    @Value("${application.module}")
+    private String module;
   }
 
   @Getter
@@ -45,17 +51,11 @@ public class ApplicationProperties {
     @Value("${server.port}")
     private int port;
 
-    @Value("${server.name}")
-    private String name;
-
     @Value("${server.contextPath}")
     private String contextPath;
 
     @Value("${server.apiPath}")
     private String apiPath;
-
-    @Value("${server.module}")
-    private String module;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;

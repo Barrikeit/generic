@@ -35,9 +35,9 @@ These components ensure:
           apiPath: /api/*
           timeZone: Europe/Madrid
         spring:
+          profiles:
+            active: @spring.profiles.active@
           config:
-            activate:
-              on-profile: @spring.profiles.active@
             import:
               - application-base.yaml
               - application-@spring.profiles.active@.yaml
