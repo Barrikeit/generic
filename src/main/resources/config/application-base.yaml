@@ -14,7 +14,7 @@ spring:
       datasource-properties:
         includeSynonyms: false
   jpa:
-    database: generic
+    database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     open-in-view: false

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
- * <b>Database Configuration Class</b>
+ * <b>Configuration Properties Class</b>
  *
  * <p>This class is responsible for reading the database configuration values defined in the
  * application's configuration file (like .yml, .yaml, or .properties). It supports two main
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Component;
  *   <li>Using {@code @ConfigurationProperties(prefix = "spring.datasource")}: This binds all
  *       properties under the specified prefix directly to the fields of the class. You need to
  *       enable this in the main class by adding
- *       {@code @EnableConfigurationProperties(DBConfiguration.class)}.
+ *       {@code @EnableConfigurationProperties(Configuration.class)}.
  *   <li>Using {@code @Value("${spring.datasource.<field>}")}: This directly injects individual
  *       values from the configuration file into the respective fields of this class.
  * </ul>
  *
- * <p>This class uses the {@code @Value} annotation approach to inject database-related properties
- * such as URL, driver, username, and password.
+ * <p>This class uses the {@code @Value} annotation approach to inject different type of properties
+ * such as ServerProperties or DatabaseProperties.
  */
 @Configuration
 public class ApplicationProperties {
