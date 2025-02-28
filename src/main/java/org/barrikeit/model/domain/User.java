@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.io.Serial;
 import java.util.Objects;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ import org.barrikeit.util.constants.EntityConstants;
 @AttributeOverride(
     name = EntityConstants.ID,
     column = @Column(name = EntityConstants.ID_USER, nullable = false))
-public class User extends GenericEntity {
+public class User extends GenericEntity<Long> {
   @Serial private static final long serialVersionUID = 1L;
 
   @Column(name = "username", length = 50, nullable = false, unique = true)

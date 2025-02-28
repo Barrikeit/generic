@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.barrikeit.util.constants.EntityConstants;
-import org.barrikeit.util.constants.ExceptionConstants;
-import org.barrikeit.util.exceptions.NotFoundException;
 import org.barrikeit.model.domain.GenericEntity;
 import org.barrikeit.model.repository.GenericRepository;
 import org.barrikeit.service.dto.GenericDto;
 import org.barrikeit.service.mapper.GenericMapper;
+import org.barrikeit.util.constants.EntityConstants;
+import org.barrikeit.util.constants.ExceptionConstants;
+import org.barrikeit.util.exceptions.NotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 @AllArgsConstructor
 public abstract class GenericService<
-    E extends GenericEntity, S extends Serializable, D extends GenericDto> {
+    E extends GenericEntity<S>, S extends Serializable, D extends GenericDto> {
   private final GenericRepository<E, S> repository;
   private final GenericMapper<E, D> mapper;
 

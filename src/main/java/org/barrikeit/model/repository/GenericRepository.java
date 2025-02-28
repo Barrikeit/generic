@@ -19,5 +19,5 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <S> the type of the entity's identifier, which must be {@link Serializable}.
  */
 @NoRepositoryBean
-public interface GenericRepository<E extends GenericEntity, S extends Serializable>
+public interface GenericRepository<E extends GenericEntity<S>, S extends Serializable>
     extends JpaRepository<E, S>, JpaSpecificationExecutor<E> {}
